@@ -92,7 +92,6 @@ public:
 
     void pushFront(KeyT key, T elem)
     {
-        // if (full())
         list_.emplace_front(key, elem);
         listHash_[key] = list_.begin();
         size_++;
@@ -148,12 +147,15 @@ class Cache2Q
     static constexpr size_t MIN_A_M_SIZE = 1;
 
 public:
+   static constexpr size_t MIN_CACHE2Q_CAPACITY = MIN_A_OUT_SIZE + MIN_A_IN_SIZE + MIN_A_M_SIZE;
 
-    Cache2Q(size_t capacity) : AinCapacity_(std::max<size_t> (std::trunc (A_IN_PART_ * capacity), 1)),
-                               AoutCapacity_(std::max<size_t>(std::trunc (A_OUT_PART_ * capacity), 1)),
+public:
+
+    Cache2Q(size_t capacity) : AinCapacity_(std::max<size_t> (std::trunc (A_IN_PART_ * capacity), MIN_A_IN_SIZE)),
+                               AoutCapacity_(std::max<size_t>(std::trunc (A_OUT_PART_ * capacity), MIN_A_M_SIZE)),
                                Ain_(AinCapacity_),
                                Aout_(AoutCapacity_),
-                               Am_(std::max<size_t>(capacity - AinCapacity_ - AoutCapacity_, 1))
+                               Am_(std::max<size_t>(capacity - AinCapacity_ - AoutCapacity_, MIN_A_OUT_SIZE))
                                {}
 
     template <typename Func>
@@ -161,19 +163,16 @@ public:
     {
         if (Am_.cached(key))
         {
-            return Am_.fetch(key, getPage); // simultaniously update Am LRU cache
-            // std::cout << "Found " << key << "in Am" << std::endl;
+            return Am_.fetch(key, getPage); // simultaniously update Am as a LRU cache
         }
 
         if (Ain_.hashed(key))
         {
             return true;
-            // std::cout << "Found " << key << "in Ain" << std::endl;
         }
 
         if (Aout_.hashed(key))
         {
-            // std::cout << "Found " << key << "in Aout" << std::endl;
             auto elem = Aout_.getElem(key);
             Am_.addElem(key, elem);
             Aout_.erase(key);
@@ -187,40 +186,20 @@ public:
     template <typename Func>
     void loadNewElem(KeyT key, Func getPage)
     {
-        // std::cout << "Loading " << key << std::endl;
         if (!Ain_.full())
         {
             Ain_.pushFront(key, getPage(key));
-            // std::cout << "Putting it into Ain" << std::endl;
             return;
         }
         
         if (Aout_.full())
-        {
             Aout_.erase(Aout_.list_.back().first);
-            // std::cout << "Removing last from Aout" << std::endl;
-        }
 
         auto toMove = Ain_.list_.back();
-
-        // std::cout << "Putting last from Ain to Aout " << toMove.first << std::endl;
         Aout_.pushFront(toMove.first, toMove.second);
-        // std::cout << "Removing last from Ain" << std::endl;
+
         Ain_.erase(toMove.first);
-
-        // std::cout << "Putting it into Ain" << std::endl;
         Ain_.pushFront(key, getPage(key));
-
-        // std::cout << "Ain:" << std::endl;
-        // for (auto& it : Ain_.list_)
-        //     std::cout << it.first << " ";
-
-        // std::cout << std::endl;
-
-        // std::cout << "Aout:" << std::endl;
-        // for (auto& it : Aout_.list_)
-        //     std::cout << it.first << " ";
-        // std::cout << std::endl;
     }
 
 };
