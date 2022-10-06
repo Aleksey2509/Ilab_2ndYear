@@ -1,14 +1,24 @@
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRECTORIES})
 
-set(CACHE_TEST_SRC cacheTest.cc)
-set(CACHE_TEST_EXECUTABLE cacheTests)
-add_executable(${CACHE_TEST_EXECUTABLE} ${CACHE_TEST_SRC})
+set(CACHE2Q_TEST_SRC test_cache2Q.cc)
+set(CACHE2Q_TEST test_cache2Q)
+add_executable(${CACHE2Q_TEST} ${CACHE2Q_TEST_SRC})
 
-target_link_libraries(${CACHE_TEST_EXECUTABLE} Cache2Q GTest::Main)
+set(IDEAL_CACHE_TEST_SRC test_ideal.cc)
+set(IDEAL_CACHE_TEST test_ideal_cache)
+add_executable(${IDEAL_CACHE_TEST} ${IDEAL_CACHE_TEST_SRC})
 
-add_custom_target(test_caches
-		  COMMENT "Running tests"
-		  COMMAND ./${CACHE_TEST_EXECUTABLE})
+target_link_libraries(${CACHE2Q_TEST} Cache GTest::Main)
+target_link_libraries(${IDEAL_CACHE_TEST} Cache GTest::Main)
 
-add_dependencies(${CACHE_TEST_EXECUTABLE} Cache2Q)
+add_custom_target(test_ideal
+		  COMMENT "Running tests for ideal cache"
+		  COMMAND ./${IDEAL_CACHE_TEST})
+
+add_custom_target(test_2Q
+		  COMMENT "Running tests for double-queued cache"
+		  COMMAND ./${CACHE2Q_TEST})
+
+add_dependencies(${CACHE2Q_TEST} Cache)
+add_dependencies(${IDEAL_CACHE_TEST} Cache)
