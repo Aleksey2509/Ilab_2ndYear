@@ -18,7 +18,7 @@ target_include_directories(Cache INTERFACE ${CACHE_INCLUDES})
 
 set (SRC_DIR source)
 
-set(CACHE2Q_SRC ${SRC_DIR}/cache2Q-main.cc)
+set(CACHE2Q_SRC ${SRC_DIR}/cache2Q_main.cc)
 set(CACHE2Q cache2Q)
 add_executable(${CACHE2Q} ${CACHE2Q_SRC})
 

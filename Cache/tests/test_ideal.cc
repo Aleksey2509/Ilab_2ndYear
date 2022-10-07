@@ -7,7 +7,7 @@ int getPage (int pageKey)
     return pageKey;
 }
 
-TEST(IdealCacheTest, BasicTest1)
+TEST(IdealCacheTest, Test1)
 {
     cache::idealCache<int> cache{15};
     int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
@@ -20,7 +20,7 @@ TEST(IdealCacheTest, BasicTest1)
     EXPECT_EQ(hits, 3);
 }
 
-TEST(IdealCacheTest, BasicTest2)
+TEST(IdealCacheTest, Test2)
 {
     cache::idealCache<int> cache{4};
     int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
@@ -32,7 +32,7 @@ TEST(IdealCacheTest, BasicTest2)
 
     EXPECT_EQ(hits, 7);
 }
-TEST(IdealCacheTest, BasicTest3)
+TEST(IdealCacheTest, Test3)
 {
     cache::idealCache<int> cache{1};
     int input[] = {1, 2, 3, 4, 5, 5, 5, 1, 2, 3};

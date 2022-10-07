@@ -7,7 +7,7 @@ int getPage (int pageKey)
     return pageKey;
 }
 
-TEST(LRUCacheTest, BasicTest)
+TEST(LRUCacheTest, Test)
 {
     cache::CacheLRU<int> cache{4};
     int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
@@ -21,7 +21,7 @@ TEST(LRUCacheTest, BasicTest)
 }
 
 
-TEST(Cache2QTest, BasicTest1)
+TEST(Cache2QTest, Test1)
 {
     cache::Cache2Q<int> cache{15};
     int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
@@ -34,7 +34,7 @@ TEST(Cache2QTest, BasicTest1)
     EXPECT_EQ(hits, 3);
 }
 
-TEST(Cache2QTest, BasicTest2)
+TEST(Cache2QTest, Test2)
 {
     cache::Cache2Q<int> cache{4};
     int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
@@ -47,7 +47,7 @@ TEST(Cache2QTest, BasicTest2)
     EXPECT_EQ(hits, 1);
 }
 
-TEST(Cache2QTest, BasicTest3)
+TEST(Cache2QTest, Test3)
 {
     cache::Cache2Q<int> cache{1};
     int input[] = {1, 2, 3, 4, 5, 5, 5, 1, 2, 3};

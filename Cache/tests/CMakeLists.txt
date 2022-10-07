@@ -6,7 +6,7 @@ set(CACHE2Q_TEST test_cache2Q)
 add_executable(${CACHE2Q_TEST} ${CACHE2Q_TEST_SRC})
 
 set(IDEAL_CACHE_TEST_SRC test_ideal.cc)
-set(IDEAL_CACHE_TEST test_ideal_cache)
+set(IDEAL_CACHE_TEST test_ideal-cache)
 add_executable(${IDEAL_CACHE_TEST} ${IDEAL_CACHE_TEST_SRC})
 
 target_link_libraries(${CACHE2Q_TEST} Cache GTest::Main)
