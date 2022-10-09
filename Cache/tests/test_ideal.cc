@@ -9,10 +9,12 @@ int getPage (int pageKey)
 
 TEST(IdealCacheTest, Test1)
 {
-    cache::idealCache<int> cache{15};
     int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
+    int inputSize = sizeof(input) / sizeof(input[0]);
+
+    cache::idealCache<int> cache{3, input, input + inputSize};
     int hits = 0;
-    for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)
+    for (int i = 0; i < inputSize; i++)
     {
         hits += cache.fetch(input[i], getPage);
     }
@@ -22,10 +24,12 @@ TEST(IdealCacheTest, Test1)
 
 TEST(IdealCacheTest, Test2)
 {
-    cache::idealCache<int> cache{4};
     int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
+    int inputSize = sizeof(input) / sizeof(input[0]);
+
+    cache::idealCache<int> cache{4, input, input + inputSize};
     int hits = 0;
-    for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)
+    for (int i = 0; i < inputSize; i++)
     {
         hits += cache.fetch(input[i], getPage);
     }
@@ -34,10 +38,12 @@ TEST(IdealCacheTest, Test2)
 }
 TEST(IdealCacheTest, Test3)
 {
-    cache::idealCache<int> cache{1};
     int input[] = {1, 2, 3, 4, 5, 5, 5, 1, 2, 3};
+    int inputSize = sizeof(input) / sizeof(input[0]);
+
+    cache::idealCache<int> cache{1, input, input + inputSize};
     int hits = 0;
-    for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)
+    for (int i = 0; i < inputSize; i++)
     {
         hits += cache.fetch(input[i], getPage);
     }

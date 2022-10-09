@@ -23,7 +23,7 @@ TEST(LRUCacheTest, Test)
 
 TEST(Cache2QTest, Test1)
 {
-    cache::Cache2Q<int> cache{15};
+    cache::Cache2Q<int> cache{4};
     int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
     int hits = 0;
     for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)

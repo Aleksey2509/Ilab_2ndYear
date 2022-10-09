@@ -1,4 +1,4 @@
-#include "ideal_cache.hh"
+#include "cache2Q.hh"
 #include <iostream>
 
 int getPage(int key) { return key; }
@@ -10,13 +10,13 @@ int main()
 
     std::cin >> cacheSize >> requestNum;
 
-    cache::idealCache<int> ideal(cacheSize);
+    cache::Cache2Q<int> doubleQueued(cacheSize);
 
     for (int i = 0; i < requestNum; ++i)
     {
         int key;
         std::cin >> key;
-        if (ideal.fetch(key, getPage))
+        if (doubleQueued.fetch(key, getPage))
             hits += 1;
     }
 

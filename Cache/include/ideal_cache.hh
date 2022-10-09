@@ -17,6 +17,7 @@ private:
 
     using listElem = typename std::pair<KeyT, T>;
 
+    size_t fetched_ = 0;
     size_t capacity_;
     size_t size_;
     std::list<listElem> cache_;
@@ -51,15 +52,15 @@ private:
 
         for (auto it = cache_.begin(); it != cache_.end(); ++it)
         {
-            auto last = std::find(pageCallVector.begin(), pageCallVector.end(), it->first);
-            if (last == pageCallVector.end())
+            auto firstEncounter = std::find(pageCallVector.begin(), pageCallVector.end(), it->first);
+            if (firstEncounter == pageCallVector.end())
             {
                 toPop = it;
                 break;
             }
             else
             {
-                auto dist = std::distance(pageCallVector.begin(), last);
+                auto dist = std::distance(pageCallVector.begin(), firstEncounter);
                 if (dist > maxDist)
                 {
                     maxDist = dist;
@@ -74,12 +75,15 @@ private:
     inline bool full() const { return (size_ == capacity_); }
 
 public:
-    idealCache(unsigned capacity): capacity_(capacity) {}
+
+    template <typename BeginIt, typename LastIt>
+    idealCache(unsigned capacity, BeginIt begin, LastIt end): capacity_(capacity), pageCallVector{begin, end} {}
 
 
     template <typename Func>
     bool fetch(KeyT key, Func getPage)
     {
+        pageCallVector[fetched_++] = 0;
         auto ifHit = cacheHash_.find(key);
 
         if (ifHit == cacheHash_.end())
@@ -93,6 +97,7 @@ public:
         }
         else
             return true;
+
     }
 
     
