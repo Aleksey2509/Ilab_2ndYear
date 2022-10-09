@@ -16,7 +16,7 @@ add_library(Cache INTERFACE)
 
 target_include_directories(Cache INTERFACE ${CACHE_INCLUDES})
 
-set (SRC_DIR source)
+set(SRC_DIR source)
 
 set(CACHE2Q_SRC ${SRC_DIR}/cache2Q_main.cc)
 set(CACHE2Q cache2Q)
