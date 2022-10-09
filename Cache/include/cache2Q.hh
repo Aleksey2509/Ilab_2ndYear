@@ -18,6 +18,7 @@ private:
 
     using listElem = typename std::pair<KeyT, T>;
 
+public:
     size_t capacity_ = 0;
     size_t size_ = 0;
     std::list<listElem> cache_;
@@ -84,8 +85,6 @@ struct HashedQueue
     using ListIt = typename std::list<listElem>::iterator;
     std::unordered_map<KeyT, ListIt> listHash_;
 
-public:
-
     HashedQueue(size_t capacity) : capacity_(capacity) {}
 
     inline bool hashed (KeyT key) {return listHash_.find(key) != listHash_.end();}
@@ -124,9 +123,6 @@ public:
 template <typename T, typename KeyT = int>
 class Cache2Q
 {
-    size_t AinCapacity_ = 0;
-    size_t AoutCapacity_ = 0;
-
     using listElem = typename std::pair<KeyT, T>;
 
     HashedQueue<KeyT, T> Ain_;
@@ -134,13 +130,8 @@ class Cache2Q
 
     CacheLRU<T> Am_;
 
-    size_t AinSize_ = 0;
-    size_t AoutSize_ = 0;
-
-
-
-    static constexpr double A_IN_PART_ = 0.2;
-    static constexpr double A_OUT_PART_ = 0.4;
+    static constexpr double A_IN_PART_ = 0.25;
+    static constexpr double A_OUT_PART_ = 0.5;
 
     static constexpr size_t MIN_A_IN_SIZE = 1;
     static constexpr size_t MIN_A_OUT_SIZE = 1;
@@ -151,11 +142,11 @@ public:
 
 public:
 
-    Cache2Q(size_t capacity) : AinCapacity_(std::max<size_t> (std::trunc (A_IN_PART_ * capacity), MIN_A_IN_SIZE)),
-                               AoutCapacity_(std::max<size_t>(std::trunc (A_OUT_PART_ * capacity), MIN_A_M_SIZE)),
-                               Ain_(AinCapacity_),
-                               Aout_(AoutCapacity_),
-                               Am_(std::max<size_t>(capacity - AinCapacity_ - AoutCapacity_, MIN_A_OUT_SIZE))
+    Cache2Q(size_t capacity) : Ain_(std::max<size_t> (std::trunc (A_IN_PART_ * capacity), MIN_A_IN_SIZE)),
+                               Aout_(std::max<size_t>(std::trunc (A_OUT_PART_ * capacity), MIN_A_OUT_SIZE)),
+                               Am_((capacity > Ain_.capacity_ + Aout_.capacity_) ? 
+                                            capacity - Ain_.capacity_ - Aout_.capacity_ :
+                                            MIN_A_OUT_SIZE)
                                {}
 
     template <typename Func>
@@ -179,7 +170,7 @@ public:
             return true;
         }
 
-        loadNewElem<Func> (key, getPage);
+        loadNewElem (key, getPage);
         return false;
     }
 

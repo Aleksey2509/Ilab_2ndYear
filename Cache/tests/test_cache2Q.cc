@@ -23,7 +23,7 @@ TEST(LRUCacheTest, Test)
 
 TEST(Cache2QTest, Test1)
 {
-    cache::Cache2Q<int> cache{4};
+    cache::Cache2Q<int> cache{15};
     int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
     int hits = 0;
     for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)
@@ -37,14 +37,15 @@ TEST(Cache2QTest, Test1)
 TEST(Cache2QTest, Test2)
 {
     cache::Cache2Q<int> cache{4};
-    int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
+    // int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
+    int input[] = {1, 2, 3, 4, 2, 3, 4, 4};
     int hits = 0;
     for (int i = 0; i < sizeof(input) / sizeof(input[0]); i++)
     {
         hits += cache.fetch(input[i], getPage);
     }
 
-    EXPECT_EQ(hits, 1);
+    EXPECT_EQ(hits, 4);
 }
 
 TEST(Cache2QTest, Test3)

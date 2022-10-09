@@ -1,10 +1,10 @@
-# Cache Task
+# __Cache Task__
 
-## Task Formulation
+## __Task Formulation__
 
 Implement ideal cache and double-queue cache
 
-# Build:
+## __Build__
 
 Run in Cache folder:
 ```
@@ -23,6 +23,8 @@ To run tests for ideal cache:
 ```
 make test_ideal
 ```
+
+## __Usage__
 
 You get 2 executables: cache2Q and ideal_cache, which take cache capacity and page requests as input and give number of hits as output
 
