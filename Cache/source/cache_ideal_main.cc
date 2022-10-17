@@ -15,7 +15,6 @@ int main()
     for (int i = 0; i < requestNum; ++i)
         std::cin >> requests[i];
 
-
     cache::idealCache<int> ideal(cacheSize, requests.begin(), requests.end());
 
     for (auto& requestIt: requests)
@@ -25,5 +24,5 @@ int main()
     }
 
 
-    std::cout << "Hits = " << hits << std::endl;
+    std::cout << hits << std::endl;
 }

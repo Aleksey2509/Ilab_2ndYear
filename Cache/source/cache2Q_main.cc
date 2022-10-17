@@ -11,7 +11,7 @@ int main()
     std::cin >> cacheSize >> requestNum;
 
     cache::Cache2Q<int> doubleQueued(cacheSize);
-
+  
     for (int i = 0; i < requestNum; ++i)
     {
         int key;
@@ -20,5 +20,5 @@ int main()
             hits += 1;
     }
 
-    std::cout << "Hits = " << hits << std::endl;
+    std::cout << hits << std::endl;
 }

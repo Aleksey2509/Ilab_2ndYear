@@ -9,10 +9,10 @@ int getPage (int pageKey)
 
 TEST(IdealCacheTest, Test1)
 {
-    int input[] = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
-    int inputSize = sizeof(input) / sizeof(input[0]);
+    std::vector input = {1, 2, 3, 4, 5, 6, 7, 1, 2, 6};
+    int inputSize = input.size();
 
-    cache::idealCache<int> cache{3, input, input + inputSize};
+    cache::idealCache<int> cache{3, input.begin(), input.end()};
     int hits = 0;
     for (int i = 0; i < inputSize; i++)
     {
@@ -24,10 +24,10 @@ TEST(IdealCacheTest, Test1)
 
 TEST(IdealCacheTest, Test2)
 {
-    int input[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
-    int inputSize = sizeof(input) / sizeof(input[0]);
+    std::vector input = {1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4};
+    int inputSize = input.size();
 
-    cache::idealCache<int> cache{4, input, input + inputSize};
+    cache::idealCache<int> cache{4, input.begin(), input.end()};
     int hits = 0;
     for (int i = 0; i < inputSize; i++)
     {
@@ -38,10 +38,10 @@ TEST(IdealCacheTest, Test2)
 }
 TEST(IdealCacheTest, Test3)
 {
-    int input[] = {1, 2, 3, 4, 5, 5, 5, 1, 2, 3};
-    int inputSize = sizeof(input) / sizeof(input[0]);
+    std::vector input = {1, 2, 3, 4, 5, 5, 5, 1, 2, 3};
+    int inputSize = input.size();
 
-    cache::idealCache<int> cache{1, input, input + inputSize};
+    cache::idealCache<int> cache{1, input.begin(), input.end()};
     int hits = 0;
     for (int i = 0; i < inputSize; i++)
     {
