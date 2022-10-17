@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <iostream>
-
+#include <cmath>
 
 namespace cache
 {
@@ -26,7 +26,7 @@ public:
     using ListIt = typename std::list<listElem>::iterator;
     std::unordered_map<KeyT, ListIt> cacheHash_;
 
-    inline bool full() const { return (size_ == capacity_); }
+    bool full() const { return (size_ == capacity_); }
 
     void pop()
     {
@@ -41,7 +41,7 @@ public:
 
     CacheLRU(size_t capacity) : capacity_(capacity) {}
 
-    inline bool cached (KeyT key){ return cacheHash_.find(key) != cacheHash_.end(); }
+    bool cached (KeyT key){ return cacheHash_.find(key) != cacheHash_.end(); }
 
     template <typename Func>
     bool fetch(KeyT key, Func getPage)
@@ -87,7 +87,7 @@ struct HashedQueue
 
     HashedQueue(size_t capacity) : capacity_(capacity) {}
 
-    inline bool hashed (KeyT key) {return listHash_.find(key) != listHash_.end();}
+    bool hashed (KeyT key) {return listHash_.find(key) != listHash_.end();}
 
     void pushFront(KeyT key, T elem)
     {
@@ -116,7 +116,7 @@ struct HashedQueue
         return listHash_.find(key)->second->second;
     }
 
-    inline bool full() {return size_ == capacity_;}
+    bool full() {return size_ == capacity_;}
 };
 
 

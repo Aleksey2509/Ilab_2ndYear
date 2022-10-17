@@ -72,7 +72,7 @@ private:
         return toPop;
     }
 
-    inline bool full() const { return (size_ == capacity_); }
+    bool full() const { return (size_ == capacity_); }
 
 public:
 
