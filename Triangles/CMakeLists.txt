@@ -12,9 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(GEOMETRY_INCLUDES include)
 
-add_library(geometry3D INTERFACE)
+set(GEOMETRY_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
+set(GEOMETRY_SRC ${GEOMETRY_SRC_DIR}/intersections.cc)
 
-target_include_directories(geometry3D INTERFACE ${GEOMETRY_INCLUDES})
+add_library(geometry3D)
+
+target_include_directories(geometry3D PUBLIC ${GEOMETRY_INCLUDES})
+target_sources(geometry3D PUBLIC ${GEOMETRY_SRC})
 
 set(SRC_DIR source)
 
@@ -23,3 +27,6 @@ set(MAIN main)
 add_executable(${MAIN} ${MAIN_SRC})
 
 target_link_libraries(${MAIN} geometry3D)
+
+enable_testing()
+add_subdirectory(tests)

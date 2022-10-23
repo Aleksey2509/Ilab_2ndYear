@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <limits>
+#include <array>
 
 
 namespace geometry3D
@@ -22,24 +23,25 @@ namespace geometry3D
     constexpr auto nan = std::numeric_limits<float_t>::quiet_NaN();
     constexpr auto inf = std::numeric_limits<float_t>::infinity();
 
-    bool floatValid(float_t value)
+
+    inline bool floatValid(float_t value)
     {
         return(!std::isnan(value) && !std::isinf(value));
     }
 
-    bool floatEqual(float_t lhs, float_t rhs)
+    inline bool floatEqual(float_t lhs, float_t rhs)
     {
         return std::abs(lhs - rhs) < EPS;
     }
 
-    bool floatZero(float_t lhs)
+    inline bool floatZero(float_t lhs)
     {
         return floatEqual(lhs, 0.0);
     }
 
 struct Point3D
 {
-    float_t coords[3] = {nan, nan, nan};
+    std::array<float_t, 3> coords = {nan, nan, nan};
 
     bool valid() const
     {
@@ -76,12 +78,14 @@ struct Point3D
 
 struct Vector3D
 {
-    float_t coords[3] = {nan, nan, nan};
+    std::array<float_t, 3> coords = {nan, nan, nan};
 
     bool valid() const
     {
         return floatValid(coords[X]) && floatValid(coords[Y]) && floatValid(coords[Z]);
     }
+
+    Vector3D() = default;
 
     Vector3D(float_t firstCoord, float_t secondCoord, float_t thirdCoord)
     {
@@ -160,27 +164,28 @@ struct Vector3D
                    (floatEqual(coords[Z], other.coords[Z]));
     }
 
+    Vector3D operator+ (const Vector3D& rhs)
+    {
+        Vector3D tmp{*this};
+        return tmp += rhs;
+    }
+
+    Vector3D operator- (const Vector3D& rhs)
+    {
+        Vector3D tmp{*this};
+        return tmp -= rhs;
+    }
+
 };
 
-Vector3D operator+ (const Vector3D& lhs, const Vector3D& rhs)
-{
-    Vector3D tmp{lhs};
-    return tmp += rhs;
-}
 
-Vector3D operator- (const Vector3D& lhs, const Vector3D& rhs)
-{
-    Vector3D tmp{lhs};
-    return tmp -= rhs;
-}
-
-Vector3D operator * (float_t scale, const Vector3D& rhs)
+inline Vector3D operator * (float_t scale, const Vector3D& rhs)
 {
     Vector3D tmp{rhs};
     return tmp *= scale;
 }
 
-Vector3D operator * (const Vector3D& rhs, float_t scale)
+inline Vector3D operator * (const Vector3D& rhs, float_t scale)
 {
     Vector3D tmp{rhs};
     return tmp *= scale;
@@ -218,13 +223,12 @@ struct Line3D
     Vector3D direction;
     Point3D point;
 
+    Line3D() = default;
+
     Line3D(Vector3D vec, Point3D startingPoint) : direction(vec), point(startingPoint)
     {}
 
-    Line3D(Point3D first, Point3D second) : Line3D{Vector3D{first, second}, second}
-    {}
-
-    Line3D(Segment3D segment) : Line3D{segment.a, segment.b}
+    Line3D(Segment3D segment) : Line3D{Vector3D{segment.a, segment.b}, segment.b}
     {}
 
     bool valid() const
@@ -242,7 +246,7 @@ struct Line3D
 
     bool containsPoint(const Point3D& toCheck) const
     {
-        if (Line3D{point, toCheck}.collinearToVector(direction))
+        if (Line3D{Vector3D{point, toCheck}, toCheck}.collinearToVector(direction))
             return true;
         
         return false;
@@ -256,15 +260,15 @@ struct Line3D
 };
 
 // (norm * r) + d = 0, where * - dot product
-struct Plain3D
+struct Plane3D
 {
     Vector3D norm;
     float_t d;
 
-    Plain3D(Vector3D normal, float_t freeCoef) : norm(normal.makeUnit()), d(freeCoef)
+    Plane3D(Vector3D normal, float_t freeCoef) : norm(normal.makeUnit()), d(freeCoef)
     {}
 
-    bool operator== (const Plain3D& other) const
+    bool operator== (const Plane3D& other) const
     {
         return (norm == other.norm) && (d == other.d);
     }
@@ -275,78 +279,6 @@ struct Plain3D
     }
 };
 
-
-// needs explanation comment
-
-// okay now, have you forgottend where right and left is?
-Point3D lineLineIntersect(const Line3D rhs, const Line3D lhs)
-{
-    if (!rhs.valid() || !lhs.valid())
-        return Point3D{};
-
-    if (rhs.collinearToVector(lhs.direction))
-        return Point3D{};
-
-
-    Vector3D startingPointsDifference{rhs.point, lhs.point};
-    if (!floatZero(startingPointsDifference.scalarProduct(rhs.direction.crossProduct(lhs.direction))))
-        return Point3D{};
-
-    float_t det = rhs.direction.coords[Y] * lhs.direction.coords[X] - rhs.direction.coords[X] * lhs.direction.coords[Y];
-
-    float_t detT1 = rhs.direction.coords[Y] * (lhs.point.coords[X] - rhs.point.coords[X]) -
-                    rhs.direction.coords[X] * (lhs.point.coords[Y] - rhs.point.coords[Y]);
-
-    float_t t1 = detT1 / det;
-    Vector3D r0{rhs.point.coords[X], rhs.point.coords[Y], rhs.point.coords[Z]};
-
-    Vector3D radiusVectorOfIntersec{r0 + rhs.direction * t1};
-
-    return Point3D{radiusVectorOfIntersec.coords[X], radiusVectorOfIntersec.coords[Y], radiusVectorOfIntersec.coords[Z]};
-}
-
-// needs explanation comment
-Point3D planeLineIntersect(const Plain3D& plain, const Line3D& line)
-{
-    if (!plain.valid() || !line.valid())
-        return Point3D{};
-
-    if (floatZero(plain.norm.scalarProduct(line.direction)))
-        return Point3D{};
-
-    Vector3D r0{line.point.coords[X], line.point.coords[Y], line.point.coords[Z]};
-
-    float_t t = (plain.norm.scalarProduct(r0) + plain.d) / (plain.norm.scalarProduct(line.direction));
-
-    Vector3D radiusVectorOfIntersec{r0 + line.direction * t};
-
-    return Point3D{radiusVectorOfIntersec.coords[X], radiusVectorOfIntersec.coords[Y], radiusVectorOfIntersec.coords[Z]};
-}
-
-Point3D planeLineIntersect(const Line3D& line, const Plain3D& plain)
-{
-    return planeLineIntersect(plain, line);
-}
-
-bool planePointIntersect(const Plain3D& plain, const Point3D& point)
-{
-    if (!plain.valid() || !point.valid())
-        return false;
-
-    Vector3D r0{point.coords[X], point.coords[Y], point.coords[Z]};
-
-    if (floatZero(r0.scalarProduct(plain.norm)))
-        return true;
-
-    return false;
-
-}
-
-bool planePointIntersect(const Point3D& point, const Plain3D& plain)
-{
-    return planePointIntersect(plain, point);
-}
-
 class Triangle3D
 {
     Point3D points_[3];
@@ -355,7 +287,7 @@ class Triangle3D
     Segment3D bc;
     Segment3D ac;
 
-    bool valid_ = false;
+    // bool valid_ = false;
 
 public:
 
@@ -369,6 +301,11 @@ public:
     
 };
 
+Point3D lineLineIntersect(const Line3D lhs, const Line3D rhs);
+Point3D planeLineIntersect(const Plane3D& plain, const Line3D& line);
+Point3D planeLineIntersect(const Line3D& line, const Plane3D& plain);
+bool planePointIntersect(const Plane3D& plain, const Point3D& point);
+bool planePointIntersect(const Point3D& point, const Plane3D& plain);
 
 }
 
