@@ -125,17 +125,22 @@ class Cache2Q
 {
     using listElem = typename std::pair<KeyT, T>;
 
+    // 2q cache consits of 2 queues: A_IN, A_OUT and a main buffer Am, working as a LRU cache
     HashedQueue<KeyT, T> Ain_;
     HashedQueue<KeyT, T> Aout_;
 
     CacheLRU<T> Am_;
 
-    static constexpr double A_IN_PART_ = 0.25;
-    static constexpr double A_OUT_PART_ = 0.5;
-
+    // Capacity of at least one is needed for each of Ain, Aout, Am for this to actually be a 2q cache
     static constexpr size_t MIN_A_IN_SIZE = 1;
     static constexpr size_t MIN_A_OUT_SIZE = 1;
     static constexpr size_t MIN_A_M_SIZE = 1;
+
+    // Need to define how the total capacity will be ditribited between Ain, Aout, Am
+    static constexpr double A_IN_PART_ = 0.25;
+    static constexpr double A_OUT_PART_ = 0.5;
+    // Am capacity wiil be defined as: max_cap - Ain_cap - Aout_cap if max_cap >= 3 
+
 
 public:
    static constexpr size_t MIN_CACHE2Q_CAPACITY = MIN_A_OUT_SIZE + MIN_A_IN_SIZE + MIN_A_M_SIZE;
