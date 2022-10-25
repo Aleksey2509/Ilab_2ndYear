@@ -28,6 +28,8 @@ make test_ideal
 
 You get 2 executables: cache2Q and ideal_cache, which take cache capacity and page requests as input and give number of hits as output
 
-## __Warning!__
+## __Warnings__
 
-double-queue cache is constructed to have capacity to be equal at least 3 
+* double-queue cache is constructed to have capacity to be equal at least 3
+
+* One may encounter the fact that at small capacities double-queue cache is severely losing to LRU cache in amount of hits. This is due to the fact when the totat capacity of double-queue cache is small it's main purpose is lost: pages which are accessed several times in programm, but not in row just cannot get into the Am buffer (whole purpose of which is to contain those types of pages) because after being cached they get pushed out of Ain and then from Aout even before they are accessed the next time. As a concequence, Am buffer just stays empty, and is useless

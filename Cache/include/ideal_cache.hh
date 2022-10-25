@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <type_traits>
 
 namespace cache
 {
@@ -76,8 +77,11 @@ private:
 
 public:
 
-    template <typename BeginIt, typename LastIt>
-    idealCache(unsigned capacity, BeginIt begin, LastIt end): capacity_(capacity), pageCallVector{begin, end} {}
+    template <typename InputIt>
+    idealCache(unsigned capacity, InputIt begin, InputIt end): capacity_(capacity), pageCallVector{begin, end}
+    {
+        static_assert(std::is_constructible_v<T, typename std::iterator_traits<InputIt>::value_type>);
+    }
 
 
     template <typename Func>
@@ -99,8 +103,6 @@ public:
             return true;
 
     }
-
-    
 
 };
 
