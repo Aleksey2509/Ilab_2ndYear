@@ -18,9 +18,9 @@ private:
 
     using listElem = typename std::pair<KeyT, T>;
 
-    size_t fetched_ = 0;
     size_t capacity_;
-    size_t size_;
+    size_t fetched_ = 0;
+    size_t size_ = 0;
     std::list<listElem> cache_;
     std::vector<KeyT> pageCallVector;
 
@@ -42,7 +42,6 @@ private:
         cacheHash_.erase(toPop->first);
         cache_.erase(toPop);
         size_--;
-
         return;
     }
 
@@ -99,9 +98,8 @@ public:
 
             return false;
         }
-        else
-            return true;
 
+        return true;
     }
 
 };
