@@ -12,6 +12,17 @@ add_executable(${IDEAL_CACHE_TEST} ${IDEAL_CACHE_TEST_SRC})
 target_link_libraries(${CACHE2Q_TEST} Cache GTest::Main)
 target_link_libraries(${IDEAL_CACHE_TEST} Cache GTest::Main)
 
+option(SANITIZERS OFF)
+
+if (SANITIZERS)
+    message("-- Build with sanitizers")
+    target_compile_options(${IDEAL_CACHE_TEST} PUBLIC -fsanitize=address -fsanitize=undefined -g)
+    set_target_properties(${IDEAL_CACHE_TEST} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+
+    target_compile_options(${CACHE2Q_TEST} PUBLIC -fsanitize=address -fsanitize=undefined -g)
+    set_target_properties(${CACHE2Q_TEST} PROPERTIES LINK_FLAGS "-fsanitize=address -fsanitize=undefined")
+endif()
+
 add_custom_target(test_ideal
 		  COMMENT "Running tests for ideal cache"
 		  COMMAND ./${IDEAL_CACHE_TEST})

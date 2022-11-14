@@ -52,11 +52,11 @@ private:
 
         for (auto it = cache_.begin(); it != cache_.end(); ++it)
         {
-            auto firstEncounter = std::find(pageCallVector.begin(), pageCallVector.end(), it->first);
+            auto firstEncounter = std::find(pageCallVector.begin() + fetched_, pageCallVector.end(), it->first);
             if (firstEncounter == pageCallVector.end())
             {
                 toPop = it;
-                break;
+                return toPop;
             }
             else
             {
@@ -86,7 +86,7 @@ public:
     template <typename Func>
     bool fetch(KeyT key, Func getPage)
     {
-        pageCallVector[fetched_++] = 0;
+        fetched_++;
         auto ifHit = cacheHash_.find(key);
 
         if (ifHit == cacheHash_.end())
