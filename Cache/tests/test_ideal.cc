@@ -19,7 +19,7 @@ TEST(IdealCacheTest, Test1)
         hits += cache.fetch(input[i], getPage);
     }
 
-    EXPECT_EQ(hits, 2);
+    EXPECT_EQ(hits, 3);
 }
 
 TEST(IdealCacheTest, Test2)
@@ -34,7 +34,7 @@ TEST(IdealCacheTest, Test2)
         hits += cache.fetch(input[i], getPage);
     }
 
-    EXPECT_EQ(hits, 6);
+    EXPECT_EQ(hits, 7);
 }
 
 TEST(IdealCacheTest, Test3)
@@ -49,7 +49,7 @@ TEST(IdealCacheTest, Test3)
         hits += cache.fetch(input[i], getPage);
     }
 
-    EXPECT_EQ(hits, 7);
+    EXPECT_EQ(hits, 8);
 }
 
 
@@ -65,7 +65,7 @@ TEST(IdealCacheTest, Test4)
         hits += cache.fetch(input[i], getPage);
     }
 
-    EXPECT_EQ(hits, 14);
+    EXPECT_EQ(hits, 15);
 }
 
 TEST(IdealCacheTest, Test5)

@@ -45,31 +45,36 @@ private:
         return;
     }
 
-    ListIt findLastToUse()
+    KeyT findFutherUsed(KeyT key)
     {
-        int maxDist = 0;
-        ListIt toPop;
+        int maxDist = std::distance(pageCallVector.begin() + fetched_, std::find(pageCallVector.begin() + fetched_, pageCallVector.end(), key));
+        KeyT toPop = key;
 
         for (auto it = cache_.begin(); it != cache_.end(); ++it)
         {
             auto firstEncounter = std::find(pageCallVector.begin() + fetched_, pageCallVector.end(), it->first);
             if (firstEncounter == pageCallVector.end())
             {
-                toPop = it;
+                toPop = it->first;
                 return toPop;
             }
             else
             {
-                auto dist = std::distance(pageCallVector.begin(), firstEncounter);
+                auto dist = std::distance(pageCallVector.begin() + fetched_, firstEncounter);
                 if (dist > maxDist)
                 {
                     maxDist = dist;
-                    toPop = it;
+                    toPop = it->first;
                 }
             }
         }
 
         return toPop;
+    }
+
+    bool pageLastTimeFetched(KeyT key) const
+    {
+        return std::find(pageCallVector.begin() + fetched_, pageCallVector.end(), key) == pageCallVector.end();
     }
 
     bool full() const { return (size_ == capacity_); }
@@ -91,8 +96,17 @@ public:
 
         if (ifHit == cacheHash_.end())
         {
+            if (pageLastTimeFetched(key)) // if this is the last time this page is fetched, no need to cache it
+                return false;
+
             if (full())
-                pop((findLastToUse())->first);
+            {
+                auto candidate = findFutherUsed(key);
+                if (candidate == key)
+                    return false;
+
+                pop(candidate);
+            }
 
             add(key, getPage(key));
 
